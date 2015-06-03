@@ -139,18 +139,24 @@ def process_trade_information():
             cp_volume.append(volume_total)
             cp_volume.append(cp_name)
             final_cp_volume.append(cp_volume)           
-        print trade_volume
+        print "   "
         print volume_total
-        print cp_volume
+        # stores counter party name and trading volume in dollars
+        print cp_volume 
+        # final list object which stores ALL counter partis 
+        # and their trading volumes as lists
         print final_cp_volume        
-        # Calculate top 2 Counter Parties
-        top_two_counterparties = heapq.nlargest(2, final_cp_volume)
-        print top_two_counterparties
+    # Calculate top 2 Counter Parties
+    top_two_counterparties = heapq.nlargest(2, final_cp_volume)
+    print top_two_counterparties
     risk_positions = calculate_risk(trades_sell, trades_buy)
     top_twenty_risks = get_top_twenty_risk(risk_positions)
     return top_twenty_risks, top_two_counterparties 
 
 def main():
+    '''
+    Call generate_stats to start processing data
+    '''
     generate_stats()
 
 if __name__ == '__main__':

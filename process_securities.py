@@ -23,31 +23,15 @@ def calculate_risk(trades_sell, trades_buy):
                 loss = (float(ts[4])*float(ts[5])) - (float(tb[4])*float(tb[5]))
                 # CALCULATE if we have sold less securites than we bought
                 if loss < 0:
-                    #print " "
-                    #print tb[0] + tb[1] + tb[2] + tb[3] + tb[4] + tb[5]
-                    #print tb[0] + ts[1] + ts[2] + ts[3] + ts[4] + ts[5]
-                    #print "   Bought: " + str(float(tb[4])*float(tb[5]))
-                    #print "   Sold: " + str(float(ts[4])*float(ts[5]))
-                    #print "   Loss: " + str(loss)
                     #loss_positions.append(ts[1])
                     #loss_positions.append(ts[2])
                     risk = (int(tb[4]) - int(ts[4]))
                     if risk < tb[4] and risk > 0:
-                        #print "   Risk Position: " + str(risk)
                         tbs = []
                         tbs.append(risk)
                         tbs.append(tb[2])
                         tbs.append(tb[1])
                         risk_positions.append(tbs)
-                    #else:
-                        #print "   Risk Position: 0"      
-                    #print " "                  
-    #print loss_positions
-    #print "   "
-    #print str(len(risk_positions))
-    #print "   "
-    #print "You have RISK positions in these securities: " + str(sorted(risk_positions))
-    #print "   "
     risk_positions = sorted(risk_positions)
     return risk_positions 
 
@@ -79,21 +63,7 @@ def get_top_twenty_counter_parties():
     '''
     GET TOP 20 - Biggest Dollar Trading Counterparties
     '''
-    #print cparties
-    #cpnames = get_cparties(cparties)
-    #print cpnames
-    #print sorted(cp_volume)
-    #for counter_party in final_trades.iterkeys():
-    #    trade_date, sec_name, sec_t, trade_type, shares, amount  = map(float, final_trades[counter_party])
-    #    for t in trades:
-    #        amount += amount
-    #    print counter_party + amount    
-    ##TO DO:
-    #for k in final_trades:
-    #    print k
-    #    exit()
-    #    volume += i[4]
-    #print volume    
+  
 
 def get_top_twenty_risk(risk_positions):
     '''
@@ -132,8 +102,6 @@ def process_trade_information():
     for f in glob.glob("*.csv"):
         cp_name = ''
         cparties.append(f)
-        #print "   "
-        #print f
         # Get Counter Party name from file name
         cp_name = get_counter_party(f)
         with open(f, 'rb') as f:
@@ -149,11 +117,11 @@ def process_trade_information():
                 elif trade_in[3].strip() == "SELL":
                     trades_sell.append(trade_in)   
                 cp_volume.append(trade_in)
-        #print cp_name
-        #print "   "
         # Pass in SELL and BUY sides of all TRADES
         # for ALL counter parties for final volume processing
         final_trades[cp_name] = cp_volume
+        #TO DO: Calculate top 20 Counter Parties
+        #top_twenty_counter_parties = get_top_twenty_counter_parties(final_trades)
     #print final_trades
     risk_positions = calculate_risk(trades_sell, trades_buy)
     top_twenty_risks = get_top_twenty_risk(risk_positions)
@@ -168,9 +136,7 @@ def main():
         top_twenty_risks = process_trade_information()
         for r in top_twenty_risks:
             writer.writerow(r)
-        #print "   "
-        #print top_twenty_risks
-        #print "   "
 
 if __name__ == '__main__':
     main()
+

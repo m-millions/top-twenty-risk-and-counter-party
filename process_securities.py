@@ -57,8 +57,7 @@ def get_marks():
         for m in reader:
             smark = m
             smarks.append(smark)
-    return smarks 
-  
+    return smarks   
 
 def get_top_twenty_risk(risk_positions):
     '''
@@ -133,18 +132,18 @@ def process_trade_information():
 
 def main():
     '''
-    WRITE all data in CSV files into one file
+    WRITE all data in CSV files as many files as there
+    are objects returned by the function call
     '''
     tops = process_trade_information()
     file_name1 = "top_twenty_risks.txt"
     file_name2 = "top_two_counter_parties_dollar_volume.txt"
     file_name = file_name1
-    for r in tops:
+    for o in tops:
         with open(file_name, 'wb') as top:
             writer = csv.writer(top, delimiter=',')
-            writer.writerow(r)
+            writer.writerow(o)
         file_name = file_name2
-        print file_name  
 
 if __name__ == '__main__':
     main()

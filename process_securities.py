@@ -58,11 +58,6 @@ def get_marks():
             smark = m
             smarks.append(smark)
     return smarks 
-
-def get_top_twenty_counter_parties():
-    '''
-    GET TOP 20 - Biggest Dollar Trading Counterparties
-    '''
   
 
 def get_top_twenty_risk(risk_positions):
@@ -91,7 +86,8 @@ def process_trade_information():
     in corresponding directory
     '''
     cparties= []
-    cp_volume = []
+    final_cp_volume = []
+    volume_total = ''
     final_trades = {}
     risk_positions = []
     trade_in = ''
@@ -106,8 +102,11 @@ def process_trade_information():
         cp_name = get_counter_party(f)
         with open(f, 'rb') as f:
             reader = csv.reader(f)
+            volume_total = 0
+            cp_volume =[]
             for r in reader:
                 trade_in = r
+                trade_volume = ''
                 # Pass in all BUY trades for the 
                 # counter party
                 if trade_in[3].strip() == "BUY":
@@ -115,17 +114,22 @@ def process_trade_information():
                 # Pass in all SELL trades for the 
                 # counter party
                 elif trade_in[3].strip() == "SELL":
-                    trades_sell.append(trade_in)   
-                cp_volume.append(trade_in)
-        # Pass in SELL and BUY sides of all TRADES
-        # for ALL counter parties for final volume processing
-        final_trades[cp_name] = cp_volume
-        #TO DO: Calculate top 20 Counter Parties
-        #top_twenty_counter_parties = get_top_twenty_counter_parties(final_trades)
-    #print final_trades
+                    trades_sell.append(trade_in)
+                trade_volume = float(trade_in[4]) * float(trade_in[5])
+                volume_total += float(trade_volume)
+            cp_volume.append(volume_total)
+            cp_volume.append(cp_name)
+            final_cp_volume.append(cp_volume)           
+        print trade_volume
+        print volume_total
+        print cp_volume
+        print final_cp_volume        
+        # Calculate top 2 Counter Parties
+        top_two_counterparties = heapq.nlargest(2, final_cp_volume)
+        print top_two_counterparties
     risk_positions = calculate_risk(trades_sell, trades_buy)
     top_twenty_risks = get_top_twenty_risk(risk_positions)
-    return top_twenty_risks 
+    return top_twenty_risks, top_two_counterparties 
 
 def main():
     '''
@@ -134,6 +138,12 @@ def main():
     with open('top_20_risk.txt', 'wb') as top:
         writer = csv.writer(top, delimiter=',')
         top_twenty_risks = process_trade_information()
+        for r in top_twenty_risks:
+            writer.writerow(r)
+
+    with open('top_2_counter_parties.txt', 'wb') as top:
+        writer = csv.writer(top, delimiter=',')
+        top_two_counter_parties = process_trade_information()
         for r in top_twenty_risks:
             writer.writerow(r)
 

@@ -135,18 +135,18 @@ def main():
     '''
     WRITE all data in CSV files into one file
     '''
-    with open('top_20_risk.txt', 'wb') as top:
-        writer = csv.writer(top, delimiter=',')
-        top_twenty_risks = process_trade_information()
-        for r in top_twenty_risks:
+    tops = process_trade_information()
+    file_name1 = "top_twenty_risks.txt"
+    file_name2 = "top_two_counter_parties_dollar_volume.txt"
+    file_name = file_name1
+    for r in tops:
+        with open(file_name, 'wb') as top:
+            writer = csv.writer(top, delimiter=',')
             writer.writerow(r)
-
-    with open('top_2_counter_parties.txt', 'wb') as top:
-        writer = csv.writer(top, delimiter=',')
-        top_two_counter_parties = process_trade_information()
-        for r in top_twenty_risks:
-            writer.writerow(r)
+        file_name = file_name2
+        print file_name  
 
 if __name__ == '__main__':
     main()
+
 

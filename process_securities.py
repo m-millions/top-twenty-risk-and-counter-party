@@ -33,7 +33,27 @@ def calculate_risk(trades_sell, trades_buy):
                         tbs.append(tb[1])
                         risk_positions.append(tbs)
     risk_positions = sorted(risk_positions)
+    #return risk_positions, loss
     return risk_positions 
+
+def generate_stats():
+    '''
+    WRITE all data in CSV files as many files as there
+    are objects returned by the function call
+    '''
+    tops = process_trade_information()
+    #c_files = ["top_twenty_risks.txt",
+    #           "top_two_counter_parties_dollar_volume.txt",
+    #           "loss_report.txt"]
+    c_files = ["top_twenty_risks.txt",
+               "top_two_counter_parties_dollar_volume.txt"]
+    file_name = c_files[0]
+    for o in tops:
+        #print file_name
+        with open(file_name, 'wb') as top:
+            writer = csv.writer(top, delimiter=',')
+            writer.writerow(o)
+        file_name = c_files[1]
 
 def get_counter_party(f):
     '''
@@ -131,21 +151,7 @@ def process_trade_information():
     return top_twenty_risks, top_two_counterparties 
 
 def main():
-    '''
-    WRITE all data in CSV files as many files as there
-    are objects returned by the function call
-    '''
-    tops = process_trade_information()
-    file_name1 = "top_twenty_risks.txt"
-    file_name2 = "top_two_counter_parties_dollar_volume.txt"
-    file_name = file_name1
-    for o in tops:
-        with open(file_name, 'wb') as top:
-            writer = csv.writer(top, delimiter=',')
-            writer.writerow(o)
-        file_name = file_name2
+    generate_stats()
 
 if __name__ == '__main__':
     main()
-
-

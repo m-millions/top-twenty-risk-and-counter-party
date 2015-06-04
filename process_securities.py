@@ -1,21 +1,20 @@
 import csv
 import glob
-import os.path
-import io
 import heapq
-import re
-import sys
 
 
+#def calculate_risk_loss(trades_sell, trades_buy):
 def calculate_risk(trades_sell, trades_buy):
     '''
-    SEARCH for BUY SIDE and SELL SIDE Trades for each Security and 
-    CALCULATE LONG SHORT Positions
+    Get for BUY SIDE and SELL SIDE for each counter party and
+    calculate RISK
+    TO DO: Calculate and Return Loss
     '''
     #TO DO: Finish Loss Calculation
     #loss_positions = []
     risk = ''
     risk_positions = []
+    #TO DO: try this using map()
     for ts in trades_sell:
         for tb in trades_buy:
             if ts[1] == tb[1]:
@@ -32,24 +31,28 @@ def calculate_risk(trades_sell, trades_buy):
                         tbs.append(tb[2])
                         tbs.append(tb[1])
                         risk_positions.append(tbs)
+                break            
     risk_positions = sorted(risk_positions)
+    #TO DO: Return loss object
     #return risk_positions, loss
     return risk_positions 
 
 def generate_stats():
     '''
-    WRITE all data in CSV files as many files as there
-    are objects returned by the function call
+    WRITE all data in CSV files; write as many files as 
+    there are objects returned by the function call
+    TO DO: Report Loss
     '''
     tops = process_trade_information()
+    #TO DO: Include a new file to report loss calculations
     #c_files = ["top_twenty_risks.txt",
     #           "top_two_counter_parties_dollar_volume.txt",
     #           "loss_report.txt"]
     c_files = ["top_twenty_risks.txt",
                "top_two_counter_parties_dollar_volume.txt"]
+
     file_name = c_files[0]
     for o in tops:
-        #print file_name
         with open(file_name, 'wb') as top:
             writer = csv.writer(top, delimiter=',')
             writer.writerow(o)
@@ -67,8 +70,8 @@ def get_counter_party(f):
 
 def get_marks():
     '''
-    Reads all Securities "Marks" into a list for inclusion as part
-    of Risk Position record
+    Reads all Securities "Marks" into a list for 
+    inclusion as part of Risk Position record
     '''
     smark = ''
     smarks = []
@@ -86,6 +89,7 @@ def get_top_twenty_risk(risk_positions):
     srisks = []
     risk_positions = sorted(risk_positions)
     smarks = get_marks()
+    #TO DO: Try this using map()
     for rp in risk_positions:
         for smark in smarks:
             if rp[2] == smark[1]:
@@ -95,6 +99,7 @@ def get_top_twenty_risk(risk_positions):
                 srisk.append(rp[2])
                 srisk.append(smark[2])
                 srisks.append(srisk)
+                break
     # GET TOP 20 = Asset RISK Long Positions
     t20 = heapq.nlargest(20, srisks)
     return t20
@@ -103,16 +108,17 @@ def process_trade_information():
     '''
     READ IN trade data from all files that are marked .csv
     in corresponding directory
+    TO DO: Return Loss 
     '''
     cparties= []
     final_cp_volume = []
-    volume_total = ''
     final_trades = {}
     risk_positions = []
+    top_twenty_risks = []
     trade_in = ''
     trades_buy = []
     trades_sell = []
-    top_twenty_risks = []
+    volume_total = ''
 
     for f in glob.glob("*.csv"):
         cp_name = ''
@@ -148,14 +154,20 @@ def process_trade_information():
         print final_cp_volume        
     # Calculate top 2 Counter Parties
     top_two_counterparties = heapq.nlargest(2, final_cp_volume)
+    print "   "
     print top_two_counterparties
+    print "   "
+    #TO DO: include loss calculation
+    #risk_positions = calculate_risk_loss(trades_sell, trades_buy)   
     risk_positions = calculate_risk(trades_sell, trades_buy)
     top_twenty_risks = get_top_twenty_risk(risk_positions)
+    #TO DO: Return Risk Positions
+    #return top_twenty_risks, top_two_counterparties, risk_positions
     return top_twenty_risks, top_two_counterparties 
 
 def main():
     '''
-    Call generate_stats to start processing data
+    Calls generate_stats to start processing data
     '''
     generate_stats()
 
